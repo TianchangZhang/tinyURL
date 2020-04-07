@@ -25,13 +25,12 @@ var decTo62 = function (num) {
     return result;
 };
 var getShortUrl = function (longUrl) {
-    if (longUrl.indexOf('http') === -1) {
+    if (longUrl.indexOf("http") === -1) {
         longUrl = "http://" + longUrl;
     }
     if (longToShortHash[longUrl] != null) {
         return longToShortHash[longUrl];
-    }
-    else {
+    } else {
         var shortUrl = generateShortUrl();
         longToShortHash[longUrl] = shortUrl;
         shortToLongHash[shortUrl] = longUrl;
