@@ -1,3 +1,4 @@
 # tinyURL
-npm install -g
-node server.js
+1. npm install -g 
+
+2. node server.js
