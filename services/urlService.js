@@ -1,5 +1,3 @@
-var longToShortHash = {};
-var shortToLongHash = {};
 var encode = [];
 
 var genCharArray = function (charA, charZ) {
