@@ -1,4 +1,5 @@
 var encode = [];
+var UrlModel = require('../models/urlModel');
 
 var genCharArray = function (charA, charZ) {
     var arr = [];
@@ -22,26 +23,37 @@ var decTo62 = function (num) {
     } while (num);
     return result;
 };
-var getShortUrl = function (longUrl) {
+var getShortUrl = function (longUrl, callback) {
     if (longUrl.indexOf("http") === -1) {
         longUrl = "http://" + longUrl;
     }
-    if (longToShortHash[longUrl] != null) {
-        return longToShortHash[longUrl];
-    } else {
-        var shortUrl = generateShortUrl();
-        longToShortHash[longUrl] = shortUrl;
-        shortToLongHash[shortUrl] = longUrl;
-        return shortUrl;
-    }
+    UrlModel.findOne({longUrl: longUrl}, function (err, data) {
+        if(data) {
+            callback(data);
+        }
+        else {
+            generateShortUrl(function (shortUrl) {
+                var url = new UrlModel({
+                    shortUrl: shortUrl,
+                    longUrl: longUrl
+                });
+                url.save();
+                callback(url);
+            });
+        }
+    });
 };
 
-var generateShortUrl = function () {
-    return decTo62(Object.keys(longToShortHash).length);
+var generateShortUrl = function (callback) {
+    UrlModel.countDocuments({}, function (err, num) {
+        callback(decTo62(num));
+    });
 };
 
-var getLongUrl = function(shortUrl) {
-    return shortToLongHash[shortUrl];
+var getLongUrl = function(shortUrl, callback) {
+    UrlModel.findOne({shortUrl: shortUrl}, function (err, data) {
+       callback(data);
+    });
 };
 module.exports = {
     getShortUrl : getShortUrl,
