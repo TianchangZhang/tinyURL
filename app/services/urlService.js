@@ -1,6 +1,11 @@
 var encode = [];
 var UrlModel = require('../models/urlModel');
+var redis = require("redis");
 
+var port = process.env.REDIS_PORT_6379_TCP_PORT;
+var host = process.env.REDIS_PORT_6379_TCP_ADDR;
+
+var redisClient = redis.createClient(port, host);
 var genCharArray = function (charA, charZ) {
     var arr = [];
     var i = charA.charCodeAt(0);
