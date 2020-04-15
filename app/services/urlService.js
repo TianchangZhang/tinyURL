@@ -1,4 +1,5 @@
 var encode = [];
+
 var UrlModel = require('../models/urlModel');
 var redis = require("redis");
 
@@ -6,6 +7,7 @@ var port = process.env.REDIS_PORT_6379_TCP_PORT;
 var host = process.env.REDIS_PORT_6379_TCP_ADDR;
 
 var redisClient = redis.createClient(port, host);
+
 var genCharArray = function (charA, charZ) {
     var arr = [];
     var i = charA.charCodeAt(0);
@@ -29,25 +31,40 @@ var decTo62 = function (num) {
     return result;
 };
 var getShortUrl = function (longUrl, callback) {
-    if (longUrl.indexOf("http") === -1) {
+    if (longUrl.indexOf('http') === -1) {
         longUrl = "http://" + longUrl;
     }
-    UrlModel.findOne({longUrl: longUrl}, function (err, data) {
-        if(data) {
-            callback(data);
-        }
-        else {
-            generateShortUrl(function (shortUrl) {
-                var url = new UrlModel({
-                    shortUrl: shortUrl,
-                    longUrl: longUrl
-                });
-                url.save();
-                callback(url);
+
+    redisClient.get(longUrl, function (err, shortUrl) {
+        if (shortUrl) {
+            console.log("from redis");
+            callback({
+                shortUrl: shortUrl,
+                longUrl: longUrl
+            });
+        } else {
+            UrlModel.findOne({ longUrl: longUrl }, function (err, data) {
+                if (data) {
+                    callback(data);
+                    redisClient.set(data.shortUrl, data.longUrl);
+                    redisClient.set(data.longUrl, data.shortUrl);
+                } else {
+                    generateShortUrl(function (shortUrl) {
+                        var url = new UrlModel({
+                            shortUrl: shortUrl,
+                            longUrl: longUrl
+                        });
+                        url.save();
+                        callback(url);
+                        redisClient.set(shortUrl, longUrl);
+                        redisClient.set(longUrl, shortUrl);
+                    });
+                }
             });
         }
     });
 };
+
 
 var generateShortUrl = function (callback) {
     UrlModel.countDocuments({}, function (err, num) {
@@ -55,11 +72,27 @@ var generateShortUrl = function (callback) {
     });
 };
 
-var getLongUrl = function(shortUrl, callback) {
-    UrlModel.findOne({shortUrl: shortUrl}, function (err, data) {
-       callback(data);
+var getLongUrl = function (shortUrl, callback) {
+    redisClient.get(shortUrl, function (err, longUrl) {
+        if (longUrl) {
+            console.log("from redis");
+            callback({
+                shortUrl: shortUrl,
+                longUrl: longUrl
+            });
+        } else {
+            UrlModel.findOne({ shortUrl: shortUrl }, function (err, data) {
+                if (data) {
+                    callback(data);
+                    redisClient.set(shortUrl, data.longUrl);
+                    redisClient.set(data.longUrl, shortUrl);
+                }
+
+            });
+        }
     });
 };
+
 module.exports = {
     getShortUrl : getShortUrl,
     getLongUrl: getLongUrl
