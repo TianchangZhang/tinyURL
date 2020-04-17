@@ -5,6 +5,14 @@ angular.module("tinyurlApp")
                 $scope.longUrl = response.data.longUrl;
                 $scope.shortUrl = "http://localhost:3000/"+response.data.shortUrl;
             }, function(response){
-                console.log("what happened");
+                console.log("can't get long url");
             });
+
+        $http.get("/api/v1/urls/" + $routeParams.shortUrl + "/totalClicks").
+        then(function(response){
+            $scope.totalClicks = response.data;
+        }, function(response){
+            console.log("can't get total clicks");
+        });
+
     }]);
