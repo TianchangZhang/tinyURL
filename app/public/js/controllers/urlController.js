@@ -15,4 +15,18 @@ angular.module("tinyurlApp")
             console.log("can't get total clicks");
         });
 
+        var renderChart = function (chart, infos) {
+            $scope[chart + 'Labels'] = [];
+            $scope[chart + 'Data'] = [];
+            $http.get("/api/v1/urls/" + $routeParams.shortUrl + "/" + infos)
+                .then(function(response) {
+                    response.data.forEach(function (res) {
+                        $scope[chart + 'Labels'].push(res._id);
+                        $scope[chart + 'Data'].push(res.count);
+                    });
+                });
+        };
+        renderChart("doughnut", "referer");
+        renderChart("bar", "platform");
+        renderChart("base", "browser");
     }]);

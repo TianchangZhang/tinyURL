@@ -6,8 +6,8 @@ var RequestSchema = new Schema({
     referer: String,
     platform: String,
     browser: String,
-    country: String,
-    timestamp: Date
+    //country: String,
+    //timestamp: Date
 });
 
 var requestModel = mongoose.model('RequestModel', RequestSchema);

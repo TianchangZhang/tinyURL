@@ -8,6 +8,7 @@ var useragent = require('express-useragent');
 
 mongoose.connect("mongodb+srv://user:user@tinyurl-cwyb9.mongodb.net/test?retryWrites=true&w=majority",{useNewUrlParser: true, useUnifiedTopology: true})
 
+app.use('/node_modules', express.static(__dirname + "/node_modules"));
 app.use('/public', express.static(__dirname + "/public"));
 app.use(useragent.express());
 app.use("/api/v1", restRouter);

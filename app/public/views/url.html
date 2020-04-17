@@ -9,14 +9,58 @@
             <a ng-href="{{shortUrl}}" target="_blank">{{shortUrl}}</a>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Total Clicks
-            </div>
-            <div class="panel-body">
-                {{ totalClicks }}
-            </div>
+
+</div>
+
+<br>
+<br>
+<div class="col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Total Clicks
+        </div>
+        <div class="panel-body">
+            {{ totalClicks }}
         </div>
     </div>
 </div>
+
+ <div class="col-md-6">
+     <div class="panel panel-default">
+         <div class="panel-heading">
+             Referrer
+         </div>
+         <div class="panel-body">
+             <canvas id="doughnut" class="chart chart-doughnut"
+                     chart-data="doughnutData" chart-labels="doughnutLabels">
+             </canvas>
+         </div>
+     </div>
+ </div>
+
+ <div class="col-md-6">
+     <div class="panel panel-default">
+         <div class="panel-heading">
+             Platform
+         </div>
+         <div class="panel-body">
+             <canvas id="bar" class="chart chart-bar"
+                     chart-data="barData" chart-labels="barLabels" >
+             </canvas>
+         </div>
+     </div>
+ </div>
+
+ <div class="col-md-6">
+     <div class="panel panel-default">
+         <div class="panel-heading">
+             Browser
+         </div>
+         <div class="panel-body">
+             <canvas id="base" class="chart-horizontal-bar"
+                     chart-data="baseData" chart-labels="baseLabels">
+             </canvas>
+         </div>
+     </div>
+ </div>
+
